@@ -5,6 +5,7 @@ jk012345@gmail.com
 www.ciiwolstudio.com
 */
 
+
 /* Create scene */
 var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
@@ -28,7 +29,9 @@ var render = function() {
     /* Update Direction */
 
     /* Rotate Scene Camera or Compass */
-    compass.rotateZ(0.01);
+    compass.rotation.x = deg2rad(-gPitch);
+    compass.rotation.y = deg2rad(-gRoll);
+    compass.rotation.z = deg2rad(-90-gHead);
 
     renderer.render(scene, camera);
 };
