@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
     /* Get Video(Camera) stream */
     var video = document.getElementById("video");
     var videoObj = {"video":true};
-    var errBack = function(error) { console.log("Video Error : ", error.code);};
+    var errBack = function(error) { alert("Video Error : ", error.code);};
     /* Put video listener */
     if(navigator.getUserMedia) {
         navigator.getUserMedia(videoObj, function(stream) {
