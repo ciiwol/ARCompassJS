@@ -4,39 +4,73 @@ Jujin Kim
 jk012345@gmail.com
 www.ciiwolstudio.com
 */
-
-
-/* Create scene */
-var scene = new THREE.Scene();
-var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
-
-var renderer = new THREE.WebGLRenderer();
-renderer.setSize( window.innerWidth, window.innerHeight );
-document.body.appendChild( renderer.domElement )
-
-/* Create Compass */
-var compass = new THREE.Group();
+var scene;
+var camera;
+var renderer, render;
+var compass;
 var cpBody, cpNorthHand, cpBigHands, cpMidHands, cpSmallHands;
-createCompass();
 
-scene.add(compass);
-camera.position.z = 15;
+document.addEventListener("DOMContentLoaded", function(event) {
+    /* Get Video(Camera) stream */
+    var video = document.getElementById("video");
+    var videoObj = {"video":true};
+    var errBack = function(error) { console.log("Video Error : ", error.code);};
+    /* Put video listener */
+    if(navigator.getUserMedia) {
+        navigator.getUserMedia(videoObj, function(stream) {
+            video.src = stream;
+            video.play();
+        }, errBack);
+    } else if(navigator.webkitGetUserMedia) { // WebKit-prefixed
+		navigator.webkitGetUserMedia(videoObj, function(stream){
+			video.src = window.webkitURL.createObjectURL(stream);
+			video.play();
+		}, errBack);
+	}
+	else if(navigator.mozGetUserMedia) { // Firefox-prefixed
+		navigator.mozGetUserMedia(videoObj, function(stream){
+			video.src = window.URL.createObjectURL(stream);
+			video.play();
+		}, errBack);
+	}
 
-/* Update */
-var render = function() {
-    requestAnimationFrame(render);
+    /* Create scene */
+    scene = new THREE.Scene();
+    camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
 
-    /* Update Direction */
+    renderer = new THREE.WebGLRenderer({alpha:true});   //make renderer.alpha to true for transparent background
+    renderer.setSize( window.innerWidth, window.innerHeight );
+    //document.body.appendChild( renderer.domElement )
 
-    /* Rotate Scene Camera or Compass */
-    compass.rotation.x = deg2rad(-gPitch);
-    compass.rotation.y = deg2rad(-gRoll);
-    compass.rotation.z = deg2rad(-90-gHead);
+    /* Create Compass */
+    compass = new THREE.Group();
+    cpBody, cpNorthHand, cpBigHands, cpMidHands, cpSmallHands;
+    createCompass();
+    compass.position.y -= 3;
+    compass.rotation.x = 90;
 
-    renderer.render(scene, camera);
-};
+    scene.add(compass);
+    //camera.position.z = 15;
 
-render();
+    /* Update */
+    render = function() {
+        requestAnimationFrame(render);
+
+        /* Update Direction */
+
+        /* Rotate Scene Camera or Compass */
+        // compass.rotation.x = deg2rad(-gPitch);
+        // compass.rotation.y = deg2rad(-gRoll);
+        // compass.rotation.z = deg2rad(-90-gHead);
+        camera.rotation.x = deg2rad(gPitch);
+        camera.rotation.y = deg2rad(gRoll);
+        camera.rotation.z = deg2rad(gHead);
+
+        renderer.render(scene, camera);
+    };
+
+    render();
+}, false);
 
 /* Create Compass */
 function createCompass()
