@@ -7,7 +7,7 @@ www.ciiwolstudio.com
 var scene;
 var camera;
 var renderer, render;
-var compass;
+var compass, compass_m;
 var cpBody, cpNorthHand, cpBigHands, cpMidHands, cpSmallHands;
 
 document.addEventListener("DOMContentLoaded", function(event) {
@@ -47,10 +47,15 @@ document.addEventListener("DOMContentLoaded", function(event) {
     cpBody, cpNorthHand, cpBigHands, cpMidHands, cpSmallHands;
     createCompass();
     compass.position.y -= 3;
-    compass.rotation.x = 90;
+    compass.rotation.set(deg2rad(90), 0, deg2rad(90));
+
+    /* copy compass to mini compass */
+    compass_m = compass.clone();
+    compass_m.scale.set(0.3, 0.3, 0.3);
+    compass.scale.set(1.5, 1.5, 1.5);
 
     scene.add(compass);
-    //camera.position.z = 15;
+    scene.add(compass_m);
 
     /* Update */
     render = function() {
@@ -62,9 +67,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
         // compass.rotation.x = deg2rad(-gPitch);
         // compass.rotation.y = deg2rad(-gRoll);
         // compass.rotation.z = deg2rad(-90-gHead);
-        camera.rotation.x = deg2rad(gPitch);
-        camera.rotation.y = deg2rad(gRoll);
-        camera.rotation.z = deg2rad(gHead);
+        camera.rotation.set(deg2rad(gPitch-90), deg2rad(gRoll), deg2rad(gHead));
 
         renderer.render(scene, camera);
     };
@@ -101,9 +104,7 @@ function createCompass()
         var bhMaterial = new THREE.MeshBasicMaterial({color : cpBigHandColor});
         cpBigHands[i] = new THREE.Mesh(bhGeometry, bhMaterial);
         var p = calcPos((i+1) * 90);
-        cpBigHands[i].position.x = p.x;
-        cpBigHands[i].position.y = p.y;
-        cpBigHands[i].position.z = p.z;
+        cpBigHands[i].position.set(p.x, p.y, p.z);
         cpBigHands[i].rotateZ(deg2rad(i*90));
         compass.add(cpBigHands[i]);
     }
@@ -116,9 +117,7 @@ function createCompass()
         var mhMaterial = new THREE.MeshBasicMaterial({color : cpMidHandColor});
         cpMidHands[i] = new THREE.Mesh(mhGeometry, mhMaterial);
         var p = calcPos((i+1) * 90-45);
-        cpMidHands[i].position.x = p.x;
-        cpMidHands[i].position.y = p.y;
-        cpMidHands[i].position.z = p.z;
+        cpMidHands[i].position.set(p.x, p.y, p.z);
         cpMidHands[i].rotateZ(deg2rad(i*90-45));
         compass.add(cpMidHands[i]);
     }
@@ -135,9 +134,7 @@ function createCompass()
             var sDeg = seg * 45;
             var splitDeg = 45 / (cpCountHandsOctant+1);
             var p = calcPos(sDeg + splitDeg*(i+1));
-            cpSmallHands[i].position.x = p.x;
-            cpSmallHands[i].position.y = p.y;
-            cpSmallHands[i].position.z = p.z;
+            cpSmallHands[i].position.set(p.x, p.y, p.z);
             cpSmallHands[i].rotateZ(deg2rad(-90+sDeg + splitDeg * (i+1)));
             compass.add(cpSmallHands[i]);
         }
