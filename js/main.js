@@ -64,9 +64,6 @@ document.addEventListener("DOMContentLoaded", function(event) {
         /* Update Direction */
 
         /* Rotate Scene Camera or Compass */
-        // compass.rotation.x = deg2rad(-gPitch);
-        // compass.rotation.y = deg2rad(-gRoll);
-        // compass.rotation.z = deg2rad(-90-gHead);
         camera.rotation.set(deg2rad(gPitch-90), deg2rad(gRoll), deg2rad(gHead));
 
         renderer.render(scene, camera);
